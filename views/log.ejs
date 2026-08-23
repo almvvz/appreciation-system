@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Activity</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Story+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <%- include('partials/sidebar') %>
+        <main class="content">
+            <h1>Welcome, <%= username %>!</h1>
+            <div class="log-grid">
+            <% if (justLogged) { %>
+                <div class="success-banner">Entry logged! Keep it up, Bibus</div>
+            <% } %>
+            
+                <div class="container">
+                        <h3>Log a new entry</h3>
+                        <form action="/entries" method="POST">
+                            <textarea name="diary_text" placeholder="What did you do today?" required></textarea>
+                            <select name="category">
+                                <option value="study">Study</option>
+                                <option value="sports">Sports</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <input type="number" name="duration_minutes" placeholder="Duration in minutes" required>
+                            <button type="submit">Log Entry</button>
+                        </form>
+                </div>
+            
+
+            <% if (recent.length > 0) { %>
+                <div class="container">
+                    <h3>Recent Activity</h3>
+                    <ul>
+                        <% recent.forEach((entry) => { %>
+                            <li>
+                                <strong><%= entry.category %></strong>: <%= entry.diary_text %>
+                                <span class="pts"><%= entry.points_earned >= 0 ? '+' : '' %><%= entry.points_earned %> pts</span>                            </li>
+                        <% }); %>
+                    </ul>
+                </div>
+            </div>
+            <% } %>
+        </main>
+    </div>
+    <audio id="click-sound" src="/sounds/click.mp3"></audio>
+    <audio id="log-sound" src="/sounds/log.mp3"></audio>
+    <script>
+        document.querySelectorAll("button").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const clickSound = document.getElementById("click-sound");
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => {});
+            });
+        });
+    </script>
+    <% if (justLogged) { %>
+    <script>
+        const logSound = document.getElementById("log-sound");
+        logSound.play().catch(() => {});
+    </script>
+    <% } %>
+    <script>
+    const bgMusic = document.getElementById("bg-music");
+    bgMusic.volume = 0.15;
+
+    const savedTime = localStorage.getItem("musicTime");
+    const savedMuted = localStorage.getItem("musicMuted");
+
+    if (savedTime) {
+        bgMusic.currentTime = parseFloat(savedTime);
+    }
+
+    const musicToggle = document.getElementById("music-toggle");
+
+    if (savedMuted === "true") {
+        musicToggle.textContent = "🔇 Music";
+    } else {
+        bgMusic.play().catch(() => {
+            document.body.addEventListener("click", () => {
+                bgMusic.play().catch(() => {});
+            }, { once: true });
+        });
+    }
+
+    musicToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicToggle.textContent = "🔊 Music";
+            localStorage.setItem("musicMuted", "false");
+        } else {
+            bgMusic.pause();
+            musicToggle.textContent = "🔇 Music";
+            localStorage.setItem("musicMuted", "true");
+        }
+    });
+
+    setInterval(() => {
+        localStorage.setItem("musicTime", bgMusic.currentTime);
+    }, 1000);
+</script>
+</body>
+</html>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Story+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <%- include('partials/sidebar') %>
+        <main class="content">
+            <h1>Babus Shop</h1>
+            <div class="shop-grid">
+                <% rewards.forEach((reward) => { %>
+                    <div class="shop-card">
+                        <div class="shop-icon"><img src="/icons/gift.png" class="icon-shop"></div>
+                        <h3><%= reward.name %></h3>
+                        <p class="shop-price"><img src="/icons/dollar.png" class="icon"> <%= reward.point_cost %></p>
+                        <form action="/redeem" method="POST">
+                            <input type="hidden" name="reward_id" value="<%= reward.id %>">
+                            <button type="submit" <%= total < reward.point_cost ? 'disabled' : '' %>>
+                                <%= total < reward.point_cost ? 'Not enough coins' : 'Redeem' %>
+                            </button>
+                        </form>
+                    </div>
+                <% }); %>
+            </div>
+        </main>
+    </div>
+    <audio id="click-sound" src="/sounds/click.mp3"></audio>
+    <audio id="buy-sound" src="/sounds/buy.mp3"></audio>
+    <script>
+        document.querySelectorAll("button").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const clickSound = document.getElementById("click-sound");
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => {});
+            });
+        });
+    </script>
+    <% if (justBought) { %>
+    <script>
+        const buySound = document.getElementById("buy-sound");
+        buySound.play().catch(() => {});
+    </script>
+    <% } %>
+    <script>
+    const bgMusic = document.getElementById("bg-music");
+    bgMusic.volume = 0.15;
+
+    const savedTime = localStorage.getItem("musicTime");
+    const savedMuted = localStorage.getItem("musicMuted");
+
+    if (savedTime) {
+        bgMusic.currentTime = parseFloat(savedTime);
+    }
+
+    const musicToggle = document.getElementById("music-toggle");
+
+    if (savedMuted === "true") {
+        musicToggle.textContent = "🔇 Music";
+    } else {
+        bgMusic.play().catch(() => {
+            document.body.addEventListener("click", () => {
+                bgMusic.play().catch(() => {});
+            }, { once: true });
+        });
+    }
+
+    musicToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicToggle.textContent = "🔊 Music";
+            localStorage.setItem("musicMuted", "false");
+        } else {
+            bgMusic.pause();
+            musicToggle.textContent = "🔇 Music";
+            localStorage.setItem("musicMuted", "true");
+        }
+    });
+
+    setInterval(() => {
+        localStorage.setItem("musicTime", bgMusic.currentTime);
+    }, 1000);
+</script>
+</body>
+</html>

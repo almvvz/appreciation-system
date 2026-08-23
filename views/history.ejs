@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Story+Script&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-layout">
+        <%- include('partials/sidebar') %>
+        <main class="content">
+            <h1>Your History</h1>
+            <div class="history-wrapper">
+            <div class="container">
+                <ul>
+                    <% entries.forEach((entry) => { %>
+                        <li>
+                            <strong><%= entry.category %></strong>: <%= entry.diary_text %>
+                            <span class="pts"><%= entry.points_earned >= 0 ? '+' : '' %><%= entry.points_earned %> pts</span>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+        </main>
+    </div>
+    <script>
+    document.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const clickSound = document.getElementById("click-sound");
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => {});
+        });
+    });
+</script>
+<script>
+    const bgMusic = document.getElementById("bg-music");
+    bgMusic.volume = 0.15;
+
+    const savedTime = localStorage.getItem("musicTime");
+    const savedMuted = localStorage.getItem("musicMuted");
+
+    if (savedTime) {
+        bgMusic.currentTime = parseFloat(savedTime);
+    }
+
+    const musicToggle = document.getElementById("music-toggle");
+
+    if (savedMuted === "true") {
+        musicToggle.textContent = "🔇 Music";
+    } else {
+        bgMusic.play().catch(() => {
+            document.body.addEventListener("click", () => {
+                bgMusic.play().catch(() => {});
+            }, { once: true });
+        });
+    }
+
+    musicToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicToggle.textContent = "🔊 Music";
+            localStorage.setItem("musicMuted", "false");
+        } else {
+            bgMusic.pause();
+            musicToggle.textContent = "🔇 Music";
+            localStorage.setItem("musicMuted", "true");
+        }
+    });
+
+    setInterval(() => {
+        localStorage.setItem("musicTime", bgMusic.currentTime);
+    }, 1000);
+</script>
+</body>
+<audio id="click-sound" src="/sounds/click.mp3"></audio>
+</html>

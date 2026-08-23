@@ -1,0 +1,12 @@
+<audio id="bg-music" src="/adela.mp3" loop></audio>
+<div class="sidebar">
+    <h2>Babus System</h2>
+    <div class="coin-balance"> <img src="icons/dollar.png" class="icon"> <%= total %> Babus Coins</div>
+    <nav>
+        <a href="/log" class="<%= active === 'log' ? 'active' : '' %>"> <img src="/icons/pencil.png" class="icon"> Log Activity</a>
+        <a href="/history" class="<%= active === 'history' ? 'active' : '' %>"> <img src="icons/book.png" class="icon"> History</a>
+        <a href="/shop" class="<%= active === 'shop' ? 'active' : '' %>"><img src="icons/shopping-cart.png" class="icon">Shop</a>
+    </nav>
+    <button id="music-toggle" type="button">Music</button>
+    <a href="/logout" class="logout-link">Logout</a>
+</div>
