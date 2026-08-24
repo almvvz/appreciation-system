@@ -8,13 +8,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Story+Script&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-layout">
         <%- include('partials/sidebar') %>
         <main class="content">
             <h1>Welcome, <%= username %>!</h1>
-            <div class="log-grid">
+        <div class="log-grid"></div>
             <% if (justLogged) { %>
                 <div class="success-banner">Entry logged! Keep it up, Bibus</div>
             <% } %>
@@ -26,6 +29,11 @@
                             <select name="category">
                                 <option value="study">Study</option>
                                 <option value="sports">Sports</option>
+                                <option value="music">Music</option>
+                                <option value="self-care">Self-care</option>
+                                <option value="health">Health</option>
+                                <option value="chores">Chores</option>
+                                <option value="growth">Personal Growth</option>
                                 <option value="other">Other</option>
                             </select>
                             <input type="number" name="duration_minutes" placeholder="Duration in minutes" required>

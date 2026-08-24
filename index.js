@@ -8,6 +8,16 @@ import session from "express-session";
 const app = express();
 const port = 3000;
 
+const categoryRates = {
+    study: 1,
+    sports: 1,
+    music: 1,
+    creativity: 0.75,
+    reading: 0.75,
+    selfcare: 0.5,
+    chores: 0.5
+};
+
 app.set("view engine", "ejs");
 
 app.use(morgan("dev"));
@@ -130,7 +140,9 @@ app.post("/entries", requireLogin, async (req, res) => {
     const duration_minutes = req.body["duration_minutes"];
     const userId = req.session.userId;
 
-    const points = Math.floor(duration_minutes / 15);
+
+    const rate = categoryRates[category] || 1;
+    const points = Math.floor((duration_minutes / 15) * rate);
 
     await db.query(
         "INSERT INTO entries (user_id, diary_text, category, duration_minutes, points_earned) VALUES ($1, $2, $3, $4, $5)",
