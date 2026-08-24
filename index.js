@@ -13,9 +13,10 @@ const categoryRates = {
     sports: 1,
     music: 1,
     creativity: 0.75,
-    reading: 0.75,
+    health: 0.75,
     selfcare: 0.5,
-    chores: 0.5
+    chores: 0.5,
+    growth: 0.5
 };
 
 app.set("view engine", "ejs");
